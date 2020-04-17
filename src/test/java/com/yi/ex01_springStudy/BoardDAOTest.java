@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.yi.domain.BoardVO;
+import com.yi.domain.Criteria;
 import com.yi.persistence.BoardDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +23,7 @@ public class BoardDAOTest {
 		System.out.println(dao);
 	}
 	
-	@Test
+	//@Test
 	public void testInsert() throws Exception {
 		BoardVO vo = new BoardVO();
 		vo.setTitle("게시글을 등록합니다.");
@@ -31,12 +32,12 @@ public class BoardDAOTest {
 		dao.insert(vo);
 	}
 	
-	@Test
+	//@Test
 	public void testReadByNo() throws Exception {
 		dao.readByNo(1);
 	}
 	
-	@Test
+	//@Test
 	public void testList() throws Exception {
 		List<BoardVO> list = dao.list();
 		for(BoardVO b : list) {
@@ -44,7 +45,7 @@ public class BoardDAOTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testUpdate() throws Exception {
 		BoardVO vo = new BoardVO();
 		vo.setTitle("게시글을 수정합니다.");
@@ -53,8 +54,21 @@ public class BoardDAOTest {
 		dao.update(vo);
 	}
 	
-	@Test
+	//@Test
 	public void testDelete() throws Exception {
 		dao.delete(1);
+	}
+	
+	//@Test
+	public void testListPage() throws Exception {
+		dao.listPage(2);
+	}
+	
+	@Test
+	public void testListCriteria() throws Exception {
+		Criteria cri = new Criteria(); //페이지번호, 페이지당 display 게시글 갯수
+		cri.setPage(2);
+		cri.setPerPageNum(5);
+		dao.listCrigeria(cri);
 	}
 }

@@ -5,15 +5,15 @@
 <script>
 	$(function(){
 		$("#goList").click(function(){
-			location.href = "${pageContext.request.contextPath}/board/list";
+			location.href = "${pageContext.request.contextPath}/board/listPage?page=${cri.page}";
 		})
 		
 		$("#remove").click(function(){
-			location.href = "${pageContext.request.contextPath}/board/remove?bno=${board.bno}";
+			location.href = "${pageContext.request.contextPath}/board/removePage?bno=${board.bno}&page=${cri.page}";
 		})
 		
 		$("#modify").click(function(){
-			location.href = "${pageContext.request.contextPath}/board/update?bno=${board.bno}";
+			location.href = "${pageContext.request.contextPath}/board/updatePage?bno=${board.bno}&page=${cri.page}";
 		})
 	})
 </script>
