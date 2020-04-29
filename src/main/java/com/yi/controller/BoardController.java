@@ -85,7 +85,7 @@ public class BoardController {
 		
 		model.addAttribute("list", list);
 		model.addAttribute("pageMaker", pageMaker);
-		return "/board/listPage";
+		return "/sboard/listPage";
 	}
 	
 	@RequestMapping(value = "/board/readPage", method = RequestMethod.GET)
@@ -97,13 +97,13 @@ public class BoardController {
 		service.viewcntUpdate(vo);
 		model.addAttribute("board", vo);
 		model.addAttribute("cri", cri);
-		return "/board/readPage";
+		return "/sboard/readPage";
 	}
 	
 	@RequestMapping(value = "/board/removePage", method = RequestMethod.GET)
 	public String removePage(int bno, Criteria cri) throws Exception {
 		service.delete(bno);
-		return "redirect:/board/listPage?page="+cri.getPage();
+		return "redirect:/sboard/listPage?page="+cri.getPage();
 	}
 	
 	@RequestMapping(value = "/board/updatePage", method = RequestMethod.GET)
@@ -111,7 +111,7 @@ public class BoardController {
 		BoardVO vo = service.readByNo(bno);
 		model.addAttribute("board", vo);
 		model.addAttribute("cri", cri);
-		return "/board/updatePage";
+		return "/sboard/updatePage";
 	}
 	
 	@RequestMapping(value = "/board/updatePage", method = RequestMethod.POST)
@@ -122,6 +122,6 @@ public class BoardController {
 		service.update(vo);
 		
 		model.addAttribute("board", vo);
-		return "redirect:/board/readPage?bno="+vo.getBno()+"&page="+cri.getPage()+"&flag=false";
+		return "redirect:/sboard/readPage?bno="+vo.getBno()+"&page="+cri.getPage()+"&flag=false";
 	}
 }

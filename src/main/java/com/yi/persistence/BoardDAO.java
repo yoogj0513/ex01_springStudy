@@ -20,4 +20,6 @@ public interface BoardDAO {
 	
 	public List<BoardVO> listSearchCrigeria(SearchCriteria cri) throws Exception;
 	public int totalSearchCount(SearchCriteria cri) throws Exception;
+	
+	public void updateReplyCnt(int amount, int bno) throws Exception;
 }
