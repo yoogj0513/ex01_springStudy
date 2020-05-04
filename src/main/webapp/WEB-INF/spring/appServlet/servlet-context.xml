@@ -21,6 +21,17 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	<!-- 외부에서 끌어다 쓰는 것이기 때문에 id틀리면 안됨 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10485760"></beans:property><!-- 원하는 사이즈 조절 가능 -->
+	</beans:bean>
+	
+	<!-- 절대경로 빈 등록 -->
+	<beans:bean id="uploadPath" class="java.lang.String"> 
+		<!-- String은 자바에 있는 클래스이기 때문에 @Autowired로 주입하지 않고 @Resource(name="uploadPath")로 주입받음 -->
+		<beans:constructor-arg value="c:/zzz/upload/"></beans:constructor-arg>
+	</beans:bean>
+	
 	<!-- controller로 변경 되었는지 확인해야함 -->
 	<context:component-scan base-package="com.yi.controller" />
 	

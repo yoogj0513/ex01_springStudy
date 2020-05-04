@@ -1,24 +1,40 @@
 package com.yi.controller;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yi.domain.BoardVO;
 import com.yi.domain.Criteria;
 import com.yi.domain.PageMaker;
 import com.yi.domain.SearchCriteria;
 import com.yi.service.BoardService;
+import com.yi.util.UploadFileUtils;
 
 @Controller
 @RequestMapping("/sboard/*") // command에 항상 /sboard/로 시작한다.
 public class SearchBoardController {
 	@Autowired
 	BoardService service;
+	
+	@Resource(name="uploadPath") // String은 자바에 있는 클래스이기 때문에 @Autowired로 주입하지 않고 @Resource(name="uploadPath")로 주입받음
+	String uploadPath;
 	
 	@RequestMapping(value = "/listPage", method = RequestMethod.GET)
 	public String listPage(SearchCriteria cri, Model model) throws Exception {
@@ -41,9 +57,20 @@ public class SearchBoardController {
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String registerPost(BoardVO vo) throws Exception {
+	public String registerPost(BoardVO vo, List<MultipartFile> imageFiles) throws Exception {
 		System.out.println("register POST ---------" + vo);
 		
+		ArrayList<String> fullName = new ArrayList<String>();
+		for(MultipartFile file : imageFiles) {
+			System.out.println(file.getOriginalFilename());
+			System.out.println(file.getSize());
+			
+			// upload 처리
+			String savedName = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+			fullName.add(savedName);
+		}
+		vo.setFiles(fullName);
+	
 		service.create(vo);
 		
 		return "redirect:/sboard/listPage"; //예약어 (forwrad, redirect)를 작성하면 그에 해당하는 기능이 실행
@@ -82,9 +109,19 @@ public class SearchBoardController {
 	}
 	
 	@RequestMapping(value = "/updatePage", method = RequestMethod.POST)
-	public String updatePagePost(BoardVO vo, SearchCriteria cri, Model model) throws Exception {
+	public String updatePagePost(String[] check, BoardVO vo, SearchCriteria cri, Model model) throws Exception {
 		System.out.println("update POST ---------" + vo);
 		System.out.println("update POST ---------" + cri);
+		System.out.println("check -----------" + check);
+		
+		if(check != null) {			
+			for(String d : check) {
+				System.out.println("delBno ---------" + vo.getBno());
+				System.out.println("delFile ---------" + d);
+				service.deleteAttach(vo.getBno(), d);
+			}
+		}
+		
 		
 		service.update(vo);
 		
@@ -93,5 +130,40 @@ public class SearchBoardController {
 		model.addAttribute("searchType", cri.getSearchType());
 		model.addAttribute("keyword", cri.getKeyword());
 		return "redirect:/sboard/readPage?bno="+vo.getBno();
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "displayFile", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> displayFile(String filename){
+		//서버에 있는 데이터가 아닌 외부 데이터를 들고오는 것이기 때문에 서버에서 전달할 수 없음 직접 전달할 수 있도록 데이터를 까서 전달
+		
+		ResponseEntity<byte[]> entity = null;
+		System.out.println("displayFile -----" + filename);
+		
+		InputStream in = null;
+		try {
+			in = new FileInputStream(uploadPath+"/" + filename);
+			String format = filename.substring(filename.lastIndexOf(".") + 1); //확장자
+			MediaType mType = null;
+			if(format.equalsIgnoreCase("png")) {
+				mType = MediaType.IMAGE_PNG;
+			} else if(format.equalsIgnoreCase("jpg") || format.equalsIgnoreCase("jpeg")) {
+				mType = MediaType.IMAGE_JPEG;
+			} else if(format.equalsIgnoreCase("gif")) {
+				mType = MediaType.IMAGE_GIF;
+			}
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(mType);
+			
+			//IOUtils.toByteArray(in) : byte while 처리 대신 함
+			// 이미지 확장자 마다 디코딩하는 방법이 따로 있기 때문에 headers와 같은 처리를 해줘야 함
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		}
+		
+		return entity;
 	}
 }

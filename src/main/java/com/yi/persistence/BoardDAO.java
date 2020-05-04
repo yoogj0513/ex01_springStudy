@@ -22,4 +22,8 @@ public interface BoardDAO {
 	public int totalSearchCount(SearchCriteria cri) throws Exception;
 	
 	public void updateReplyCnt(int amount, int bno) throws Exception;
+	
+	public void addAttach(String fullName) throws Exception;
+	public BoardVO readAndAttachByBno(int bno) throws Exception;
+	public void deleteAttach(int bno, String fullName) throws Exception;
 }

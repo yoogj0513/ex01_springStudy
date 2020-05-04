@@ -2,6 +2,23 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp" %>
 
+<style>
+
+.fileWrap {
+	float: left;
+	position: relative;
+	margin: 0 5px;
+}
+
+.check {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 1px !important;
+}
+	
+</style>
+
 <div class="content">
 	<div class="row">
 		<div class="col-sm-12">
@@ -32,7 +49,15 @@
 							<input type="text" name="writer" class="form-control" value="${board.writer }" readonly="readonly"/>
 						</div>
 						<div class="box-footer">
-							<button type="submit" class="btn btn-primary">Submit</button>
+							<c:forEach var="file" items="${board.files }">
+								<div class="fileWrap">
+									<img src="displayFile?filename=${file }"/>
+									<input type="checkbox" name="check" class="check" value="${file }"/>
+								</div>
+							</c:forEach>
+						</div>
+						<div class="box-footer">
+							<button type="submit" class="btn btn-warning">Modify</button>
 						</div>
 					</div>
 				</form>
@@ -40,5 +65,15 @@
 		</div>
 	</div>
 </div>
+<script>
+	$(".check").click(function() {
+		if($(this).prop("checked")) {
+			$(this).parent().css("opacity", "0.5");			
+		} else {
+			$(this).parent().css("opacity", "1");						
+		}
+	})
+	
+</script>
 
 <%@ include file="../include/footer.jsp" %>
