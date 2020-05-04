@@ -34,6 +34,7 @@ public class SearchBoardController {
 	@Autowired
 	BoardService service;
 	
+	
 	@Resource(name="uploadPath") // String은 자바에 있는 클래스이기 때문에 @Autowired로 주입하지 않고 @Resource(name="uploadPath")로 주입받음
 	String uploadPath;
 	
@@ -91,6 +92,20 @@ public class SearchBoardController {
 	
 	@RequestMapping(value = "/removePage", method = RequestMethod.GET)
 	public String removePage(int bno, SearchCriteria cri, Model model) throws Exception {
+		ArrayList<String> delFiles = service.readByNo(bno).getFiles();
+		for(String d : delFiles) {
+			service.deleteAttach(bno, d);
+			
+			// thumbnail 파일 삭제
+			File file = new File(uploadPath + d);
+			file.delete();
+			
+			// 원본 삭제
+			String originlName = d.substring(0, 12) + d.substring(14);
+			File originFile = new File(uploadPath + originlName);
+			originFile.delete();
+		}
+		
 		service.delete(bno);
 		
 		// 매개변수 값이 한글일 때는 브라우저를 밖에서 처리된 값이 들어와 깨진 값이 들어오기 때문에 model로 전달하면 한글로 전달됨
