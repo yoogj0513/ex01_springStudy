@@ -1,6 +1,8 @@
 package com.yi.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,41 @@ public class BoardDAOImpl implements BoardDAO {
 	@Override
 	public int totalSearchCount(SearchCriteria cri) throws Exception {
 		return sqlSession.selectOne(namespace + "totalSearchCount", cri);
+	}
+
+	@Override
+	public void updateReplyCnt(int amount, int bno) throws Exception {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("amount", amount);
+		map.put("bno", bno);
+		sqlSession.update(namespace + "updateReplyCnt", map);
+	}
+
+	@Override
+	public void addAttach(String fullName) throws Exception {
+		sqlSession.insert(namespace + "addAttach", fullName);
+	}
+
+	@Override
+	public BoardVO readAndAttachByBno(int bno) throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + "readAndAttachByBno", bno);
+	}
+
+	@Override
+	public void deleteAttach(int bno, String fullName) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("bno", bno);
+		map.put("fullName", fullName);
+		sqlSession.delete(namespace + "deleteAttach", map);
+	}
+
+	@Override
+	public void updateAddAttach(String fullName, int bno) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("bno", bno);
+		map.put("fullName", fullName);
+		sqlSession.insert(namespace + "updateAddAttach", map);
 	}
 
 }
