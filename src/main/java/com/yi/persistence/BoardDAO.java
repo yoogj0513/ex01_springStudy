@@ -26,4 +26,5 @@ public interface BoardDAO {
 	public void addAttach(String fullName) throws Exception;
 	public BoardVO readAndAttachByBno(int bno) throws Exception;
 	public void deleteAttach(int bno, String fullName) throws Exception;
+	public void updateAddAttach(String fullName, int bno) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.yi.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -109,19 +110,39 @@ public class SearchBoardController {
 	}
 	
 	@RequestMapping(value = "/updatePage", method = RequestMethod.POST)
-	public String updatePagePost(String[] check, BoardVO vo, SearchCriteria cri, Model model) throws Exception {
+	public String updatePagePost(String[] check, List<MultipartFile> imageFiles, BoardVO vo, SearchCriteria cri, Model model) throws Exception {
 		System.out.println("update POST ---------" + vo);
 		System.out.println("update POST ---------" + cri);
 		System.out.println("check -----------" + check);
+		System.out.println("imageFiles size ---------" + imageFiles.size());
 		
 		if(check != null) {			
 			for(String d : check) {
-				System.out.println("delBno ---------" + vo.getBno());
-				System.out.println("delFile ---------" + d);
 				service.deleteAttach(vo.getBno(), d);
+				
+				// thumbnail 파일 삭제
+				File file = new File(uploadPath + d);
+				file.delete();
+				
+				// 원본 삭제
+				String originlName = d.substring(0, 12) + d.substring(14);
+				File originFile = new File(uploadPath + originlName);
+				originFile.delete();
 			}
 		}
 		
+		ArrayList<String> fullName = new ArrayList<String>();
+		for(MultipartFile file : imageFiles) {
+			System.out.println("fileName -----------"+file.getOriginalFilename());
+			System.out.println("fileSize -----------"+file.getSize());
+			
+			if(file.getSize() != 0) {					
+				// upload 처리
+				String savedName = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+				fullName.add(savedName);
+			}
+		}
+		vo.setFiles(fullName);
 		
 		service.update(vo);
 		

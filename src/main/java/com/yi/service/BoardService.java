@@ -36,6 +36,10 @@ public class BoardService {
 	
 	public void update(BoardVO vo) throws Exception {
 		dao.update(vo);
+		
+		for(String file : vo.getFiles()) {
+			dao.updateAddAttach(file, vo.getBno());
+		}
 	}
 	
 	public void deleteAttach(int bno, String fullName) throws Exception {

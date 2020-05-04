@@ -110,4 +110,8 @@
 		delete from tbl_attach 
 			where bno = #{bno} and fullName = #{fullName}
 	</delete>
+	
+	<insert id="updateAddAttach">
+		insert into tbl_attach(fullName, bno) values(#{fullName}, #{bno})
+	</insert>
 </mapper>

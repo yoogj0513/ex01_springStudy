@@ -109,4 +109,12 @@ public class BoardDAOImpl implements BoardDAO {
 		sqlSession.delete(namespace + "deleteAttach", map);
 	}
 
+	@Override
+	public void updateAddAttach(String fullName, int bno) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("bno", bno);
+		map.put("fullName", fullName);
+		sqlSession.insert(namespace + "updateAddAttach", map);
+	}
+
 }
