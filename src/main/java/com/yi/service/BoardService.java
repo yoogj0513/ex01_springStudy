@@ -34,6 +34,7 @@ public class BoardService {
 		return dao.list();
 	}
 	
+	@Transactional
 	public void update(BoardVO vo) throws Exception {
 		dao.update(vo);
 		

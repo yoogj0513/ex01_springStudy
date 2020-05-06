@@ -92,6 +92,11 @@ public class SearchBoardController {
 	
 	@RequestMapping(value = "/removePage", method = RequestMethod.GET)
 	public String removePage(int bno, SearchCriteria cri, Model model) throws Exception {
+		// controller에서는 트랜잭션 잘 안함
+		// 여러 service를 호출하게 된다면 하나의 service에서 처리하도록해서 트랜잭션 처리해서 호출하거나
+		// 일부 묶을 수 있는 service를 묶어서 처리해 트랜잭션처리를 하고 boolean으로 값을 들고와 if문 처리해 또 service 호출되도록 하는 방법이 있음
+		// 최종적으론 controller에서 트랜잭션을 안하기 때문에 서비스에서 최대한 처리를 해야함
+		
 		ArrayList<String> delFiles = service.readByNo(bno).getFiles();
 		for(String d : delFiles) {
 			service.deleteAttach(bno, d);
