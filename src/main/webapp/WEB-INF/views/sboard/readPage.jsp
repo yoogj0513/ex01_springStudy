@@ -67,7 +67,8 @@
 				</div>
 				<div class="box-body">
 					<label>Writer</label>
-					<input type="text" class="form-control" placeholder="User Id" id="newReplyWriter"/>
+					<input type="text" class="form-control" value="${Auth }" id="newReplyWriter" readonly="readonly"/>
+					<input type="hidden" value="${Auth }"/>
 					<label>Reply Text</label>
 					<input type="text" class="form-control" placeholder="text" id="newReplyText"/>
 				</div>

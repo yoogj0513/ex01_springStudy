@@ -33,7 +33,8 @@
 						</div>
 						<div class="form-group">
 							<label>Writer</label>
-							<input type="text" name="writer" class="form-control" placeholder="Enter Writer"/>
+							<input type="text" class="form-control" value="${Auth }" readonly="readonly"/>
+							<input type="hidden" name="writer" value="${Auth }"/>
 						</div>
 						<div class="form-group">
 							<label>Image Files</label>
